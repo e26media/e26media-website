@@ -84,16 +84,28 @@ export function ContactPage() {
               </a>
 
               {/* Map */}
-              <div className="rounded-xl overflow-hidden border border-zinc-200 shadow-sm" data-testid="contact-map">
-                <iframe
-                  title="E26 Media Office Location"
-                  src={contact.mapEmbed}
-                  width="100%"
-                  height="240"
-                  style={{ border: 0 }}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
+              <div className="space-y-2" data-testid="contact-map">
+                <div className="rounded-xl overflow-hidden border border-zinc-200 shadow-sm">
+                  <iframe
+                    title="E26 Media Office Location on Google Maps"
+                    src={contact.mapEmbed}
+                    width="100%"
+                    height="240"
+                    style={{ border: 0 }}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    allowFullScreen
+                  />
+                </div>
+                <a
+                  href={contact.mapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm font-body font-semibold text-green-600 hover:text-green-700 transition-colors"
+                >
+                  <MapPin className="w-4 h-4" />
+                  Open in Google Maps
+                </a>
               </div>
             </div>
 

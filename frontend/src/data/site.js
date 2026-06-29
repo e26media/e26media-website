@@ -19,8 +19,9 @@ export const SITE = {
     address:
       "5th Floor Shalimar Complex, Near Old Ganesh Medical, Kanakanady, Mangalore - 575002",
     hours: ["Mon – Sat: 9:30 AM – 6:30 PM", "Sunday Closed"],
+    mapUrl: "https://maps.app.goo.gl/AoVDKN8UVHAnUNf57",
     mapEmbed:
-      "https://www.google.com/maps?q=Shalimar+Complex+Kanakanady+Mangalore+575002&output=embed",
+      "https://www.google.com/maps?q=12.8680171,74.8579696&z=17&output=embed",
   },
   // ── Social links — replace each url with your profile link ──────────────
   // Format:
