@@ -1,6 +1,6 @@
 // ============================================================
-// CLIENT LOGOS — Home page marquee. Use `logo` for image path or URL.
-// Add custom files under frontend/public/client-logos/
+// CLIENT LOGOS — Home page marquee.
+// Custom logos live in /public/client-logos/ and /src/assets/client-logos/
 // ============================================================
 
 const favicon = (domain) =>
@@ -15,12 +15,16 @@ export const CLIENTS = [
   {
     name: "Abrar Caterers",
     url: "https://www.abrarcaterers.com/",
-    logo: favicon("abrarcaterers.com"),
+    logo: "/client-logos/abrar-caterers.png",
+    logoBoxClass: "h-10 w-36 md:w-40 p-1",
+    hideName: true,
   },
   {
     name: "Tawakkal Overseas",
     url: "https://www.tawakkalmuslim.com/",
-    logo: favicon("tawakkalmuslim.com"),
+    logo: "/client-logos/tawakkal-overseas-full.png",
+    logoBoxClass: "h-14 w-28 md:w-32 p-1",
+    hideName: true,
   },
   {
     name: "Floriva Gifts",

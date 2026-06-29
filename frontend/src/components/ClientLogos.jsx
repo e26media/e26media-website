@@ -22,20 +22,28 @@ export function ClientLogos() {
             const itemClass =
               "group inline-flex items-center gap-3 text-zinc-400 hover:text-green-600 transition-all duration-300";
 
+            const logoBoxClass =
+              client.logoBoxClass ||
+              "h-11 w-11 p-1.5";
+
             const content = (
               <>
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-zinc-200/80 bg-zinc-50 p-1.5 grayscale opacity-80 transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100 group-hover:border-green-200 group-hover:bg-green-50 group-hover:shadow-[0_0_18px_rgba(22,163,74,0.28)]">
+                <span
+                  className={`flex shrink-0 items-center justify-center rounded-lg border border-zinc-200/80 bg-white p-1.5 grayscale opacity-80 transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100 group-hover:border-green-200 group-hover:bg-green-50 group-hover:shadow-[0_0_18px_rgba(22,163,74,0.28)] ${logoBoxClass}`}
+                >
                   <img
                     src={client.logo}
-                    alt=""
+                    alt={client.hideName ? client.name : ""}
                     className="h-full w-full object-contain"
                     loading="lazy"
                     decoding="async"
                   />
                 </span>
-                <span className="font-heading font-semibold text-xl tracking-tight transition-colors duration-300">
-                  {client.name}
-                </span>
+                {!client.hideName && (
+                  <span className="font-heading font-semibold text-xl tracking-tight transition-colors duration-300">
+                    {client.name}
+                  </span>
+                )}
               </>
             );
 
