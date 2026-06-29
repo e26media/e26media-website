@@ -10,10 +10,10 @@ export const ABOUT = {
   vision:
     "To be the most trusted technology partner for businesses transforming the way they operate, sell, and scale in a digital-first world.",
   stats: [
-    { value: "140+", label: "Projects Delivered" },
-    { value: "99.9%", label: "Uptime SLA" },
-    { value: "10x", label: "Avg. Lead Growth" },
-    { value: "12+", label: "Years Combined" },
+    { value: "100+", label: "Projects Completed" },
+    { value: "100%", label: "Client-Centric Approach" },
+    { value: "24/7", label: "Technical Support" },
+    { value: "3+", label: "Years of Innovation" },
   ],
   values: [
     { icon: "Users", title: "Experienced Team", desc: "Senior engineers, designers, and strategists who have shipped at scale." },
