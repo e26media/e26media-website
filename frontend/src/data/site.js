@@ -19,9 +19,11 @@ export const SITE = {
     address:
       "5th Floor Shalimar Complex, Near Old Ganesh Medical, Kanakanady, Mangalore - 575002",
     hours: ["Mon – Sat: 9:30 AM – 6:30 PM", "Sunday Closed"],
+    placeName: "E26 Media Private Limited Head Office",
     mapUrl: "https://maps.app.goo.gl/AoVDKN8UVHAnUNf57",
+    mapProfileUrl: "https://share.google/xEYX2mCtBS25HZ5UF",
     mapEmbed:
-      "https://www.google.com/maps?q=12.8680171,74.8579696&z=17&output=embed",
+      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3890.624!2d74.8553947!3d12.8680171!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba35b82d745ea9b%3A0xce0e0eaaeab437f2!2sE26%20Media%20Private%20Limited%20Head%20Office!5e0!3m2!1sen!2sin!4v1735689600000!5m2!1sen!2sin",
   },
   // ── Social links — replace each url with your profile link ──────────────
   // Format:

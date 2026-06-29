@@ -40,6 +40,6 @@ export const FAQS = [
   },
   {
     q: "Where is E26 Media located?",
-    a: "Our office is at 5th Floor Shalimar Complex, Near Old Ganesh Medical, Kanakanady, Mangalore - 575002. We work with clients globally and can collaborate remotely across time zones.",
+    a: "Our head office is E26 Media Private Limited Head Office — 5th Floor Shalimar Complex, Near Old Ganesh Medical, Kanakanady, Mangalore - 575002. View our verified Google Business Profile on the Contact page.",
   },
 ];

@@ -83,29 +83,47 @@ export function ContactPage() {
                 Chat on WhatsApp
               </a>
 
-              {/* Map */}
+              {/* Map — E26 Media Google Business Profile */}
               <div className="space-y-2" data-testid="contact-map">
+                <div>
+                  <h4 className="text-sm font-heading font-semibold text-zinc-900">
+                    {contact.placeName}
+                  </h4>
+                  <p className="text-xs text-zinc-500 font-body mt-0.5">
+                    Verified Google Business Profile
+                  </p>
+                </div>
                 <div className="rounded-xl overflow-hidden border border-zinc-200 shadow-sm">
                   <iframe
-                    title="E26 Media Office Location on Google Maps"
+                    title={`${contact.placeName} on Google Maps`}
                     src={contact.mapEmbed}
                     width="100%"
-                    height="240"
+                    height="300"
                     style={{ border: 0 }}
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                     allowFullScreen
                   />
                 </div>
-                <a
-                  href={contact.mapUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm font-body font-semibold text-green-600 hover:text-green-700 transition-colors"
-                >
-                  <MapPin className="w-4 h-4" />
-                  Open in Google Maps
-                </a>
+                <div className="flex flex-wrap gap-x-4 gap-y-1">
+                  <a
+                    href={contact.mapUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm font-body font-semibold text-green-600 hover:text-green-700 transition-colors"
+                  >
+                    <MapPin className="w-4 h-4" />
+                    Open in Google Maps
+                  </a>
+                  <a
+                    href={contact.mapProfileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm font-body font-semibold text-zinc-600 hover:text-green-600 transition-colors"
+                  >
+                    View business profile
+                  </a>
+                </div>
               </div>
             </div>
 
