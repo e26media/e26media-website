@@ -2,6 +2,7 @@ import { buildMetadata } from "@/lib/seo";
 import { SITE } from "@/data/site";
 import { Container } from "@/components/ui/section";
 import { ContactForm } from "@/components/forms/contact-form";
+import { getGoogleSheetsUrl } from "@/lib/sheets-url";
 import { FaqJsonLd } from "@/components/seo/json-ld";
 import { HOME_FAQS } from "@/data/faqs";
 import { PageHero } from "@/components/visual/page-hero";
@@ -16,6 +17,7 @@ export const metadata = buildMetadata({
 });
 
 export default function ContactPage() {
+  const sheetsUrl = getGoogleSheetsUrl();
   const whatsapp = `https://wa.me/${SITE.contact.whatsapp}?text=${encodeURIComponent(
     "Hi E26 Media, I'd like a free consultation."
   )}`;
@@ -78,7 +80,7 @@ export default function ContactPage() {
           <div className="rounded-xl border border-zinc-200 bg-white p-8 shadow-lg dark:border-zinc-800 dark:bg-zinc-950 lg:col-span-7">
             <h2 className="mb-2 font-heading text-2xl font-semibold">Request a free consultation</h2>
             <p className="mb-8 text-sm text-zinc-600 dark:text-zinc-400">Share your project details and we&apos;ll get back within 24 business hours.</p>
-            <ContactForm />
+            <ContactForm sheetsUrl={sheetsUrl} />
           </div>
         </div>
       </Container>

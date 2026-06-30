@@ -5,6 +5,7 @@ import { Container, SectionHeading } from "@/components/ui/section";
 import { Card } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { ContactForm } from "@/components/forms/contact-form";
+import { getGoogleSheetsUrl } from "@/lib/sheets-url";
 import { FaqJsonLd } from "@/components/seo/json-ld";
 import { LOCATIONS, getLocation } from "@/data/locations";
 import { SITE } from "@/data/site";
@@ -32,6 +33,7 @@ export default async function LocationPage({ params }: Props) {
   const { slug } = await params;
   const location = getLocation(slug);
   if (!location) notFound();
+  const sheetsUrl = getGoogleSheetsUrl();
 
   const localTestimonials = TESTIMONIALS.slice(0, 3);
 
@@ -160,7 +162,7 @@ export default async function LocationPage({ params }: Props) {
             description="Tell us about your goals. We respond within 24 business hours."
           />
           <Card>
-            <ContactForm />
+            <ContactForm sheetsUrl={sheetsUrl} />
           </Card>
         </div>
       </Container>

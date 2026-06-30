@@ -4,8 +4,12 @@ import { useContactForm } from "@/lib/contact-form";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-export function ContactForm() {
-  const { status, error, handleSubmit } = useContactForm();
+type Props = {
+  sheetsUrl: string;
+};
+
+export function ContactForm({ sheetsUrl }: Props) {
+  const { status, error, handleSubmit } = useContactForm(sheetsUrl);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -43,7 +47,7 @@ export function ContactForm() {
           Thank you! We&apos;ll respond within 24 business hours.
         </p>
       )}
-      <Button type="submit" disabled={status === "loading"} className="w-full sm:w-auto">
+      <Button type="submit" disabled={status === "loading" || !sheetsUrl} className="w-full sm:w-auto">
         {status === "loading" ? "Sending..." : "Submit enquiry"}
       </Button>
     </form>

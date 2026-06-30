@@ -14,6 +14,7 @@ import { BLOG_POSTS } from "@/data/blogs";
 import { PROCESS_STEPS } from "@/data/technologies";
 import { FaqJsonLd } from "@/components/seo/json-ld";
 import { ContactForm } from "@/components/forms/contact-form";
+import { getGoogleSheetsUrl } from "@/lib/sheets-url";
 import { LogoMarquee } from "@/components/visual/logo-marquee";
 import { TechMarquee } from "@/components/visual/tech-marquee";
 import { CtaBand } from "@/components/visual/cta-band";
@@ -33,6 +34,7 @@ const HeroMockup = dynamic(
 );
 
 export function HomePage() {
+  const sheetsUrl = getGoogleSheetsUrl();
   const featured = PORTFOLIO.filter((p) => p.featured).slice(0, 6);
   const topServices = SERVICE_CATEGORIES.slice(0, 4);
 
@@ -339,7 +341,7 @@ export function HomePage() {
             </ul>
           </div>
           <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-8 dark:border-zinc-800 dark:bg-zinc-900">
-            <ContactForm />
+            <ContactForm sheetsUrl={sheetsUrl} />
           </div>
         </Container>
       </section>

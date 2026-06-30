@@ -6,6 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { getAllServices, getService } from "@/data/services";
 import { FaqJsonLd } from "@/components/seo/json-ld";
 import { ContactForm } from "@/components/forms/contact-form";
+import { getGoogleSheetsUrl } from "@/lib/sheets-url";
 import { PageHero } from "@/components/visual/page-hero";
 import { CtaBand } from "@/components/visual/cta-band";
 import { CheckCircle2 } from "lucide-react";
@@ -35,6 +36,7 @@ export default async function ServiceDetailPage({ params }: Props) {
   const data = getService(catSlug, slug);
   if (!data) notFound();
   const { category, item } = data;
+  const sheetsUrl = getGoogleSheetsUrl();
 
   return (
     <>
@@ -168,7 +170,7 @@ export default async function ServiceDetailPage({ params }: Props) {
             title="Ready to start?"
             description="Share your requirements. We respond within 24 business hours with a clear next step."
           />
-          <ContactForm />
+          <ContactForm sheetsUrl={sheetsUrl} />
         </section>
       </Container>
 
