@@ -3,20 +3,37 @@ import { SITE } from "@/data/site";
 import { getAllServices } from "@/data/services";
 import { PORTFOLIO } from "@/data/portfolio";
 import { INDUSTRIES } from "@/data/industries";
-
 import { LOCATIONS } from "@/data/locations";
-import { BLOG_POSTS } from "@/data/blogs";
+import { BLOG_POSTS, KNOWLEDGE_CATEGORIES } from "@/data/knowledge";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = SITE.url;
-  const staticPages = ["", "/about", "/services", "/portfolio", "/case-studies", "/contact", "/industries", "/blog", "/careers", "/resources"].map(
-    (path) => ({
-      url: `${base}${path}`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: path === "" ? 1 : 0.8,
-    })
-  );
+  const staticPages = [
+    "",
+    "/about",
+    "/services",
+    "/portfolio",
+    "/case-studies",
+    "/contact",
+    "/industries",
+    "/knowledge",
+    "/knowledge/guides",
+    "/knowledge/downloads",
+    "/pricing",
+    "/careers",
+  ].map((path) => ({
+    url: `${base}${path}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: path === "" ? 1 : path === "/knowledge" ? 0.85 : 0.8,
+  }));
+
+  const knowledgeTopics = KNOWLEDGE_CATEGORIES.filter((c) => c.type === "topic").map((c) => ({
+    url: `${base}/knowledge/${c.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.75,
+  }));
 
   const services = getAllServices().map(({ category, item }) => ({
     url: `${base}/services/${category.slug}/${item.slug}`,
@@ -32,7 +49,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${base}/services/${slug}`,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
-      priority: 0.75,
+      priority: 0.8,
     }));
 
   const portfolio = PORTFOLIO.map((p) => ({
@@ -46,7 +63,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${base}/industries/${i.slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
-    priority: 0.65,
+    priority: 0.7,
   }));
 
   const locations = LOCATIONS.map((l) => ({
@@ -56,12 +73,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
-  const blogs = BLOG_POSTS.map((b) => ({
-    url: `${base}/blog/${b.slug}`,
+  const guides = BLOG_POSTS.map((b) => ({
+    url: `${base}/knowledge/guides/${b.slug}`,
     lastModified: new Date(b.date),
     changeFrequency: "monthly" as const,
     priority: 0.7,
   }));
 
-  return [...staticPages, ...categories, ...services, ...portfolio, ...industries, ...locations, ...blogs];
+  return [
+    ...staticPages,
+    ...knowledgeTopics,
+    ...categories,
+    ...services,
+    ...portfolio,
+    ...industries,
+    ...locations,
+    ...guides,
+  ];
 }

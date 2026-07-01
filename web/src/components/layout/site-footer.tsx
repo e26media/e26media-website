@@ -3,17 +3,35 @@ import Image from "next/image";
 import { withLogoCache } from "@/lib/client-logo";
 import { NAV_LINKS, SITE } from "@/data/site";
 import { SERVICE_CATEGORIES } from "@/data/services";
+import { FOOTER_LOCATION_LINKS } from "@/data/locations";
 
 export function SiteFooter() {
   return (
     <footer className="border-t border-zinc-200 bg-zinc-950 text-zinc-400 dark:border-zinc-800">
-      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-2 lg:grid-cols-5 md:px-12">
+      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-2 lg:grid-cols-6 md:px-12">
         <div className="space-y-5 lg:col-span-2">
           <Image src={withLogoCache("/logo.png")} alt="E26 Media" width={160} height={48} className="h-10 w-auto" unoptimized />
           <p className="max-w-md text-sm leading-relaxed text-zinc-500">{SITE.description}</p>
           <div className="flex flex-wrap gap-3 text-xs text-zinc-500">
-            <span>{SITE.contact.email}</span>
-            <span>{SITE.contact.phone}</span>
+            <a href={`mailto:${SITE.contact.email}`} className="hover:text-white">
+              {SITE.contact.email}
+            </a>
+            <a href={`tel:${SITE.contact.phoneRaw}`} className="hover:text-white">
+              {SITE.contact.phone}
+            </a>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {SITE.social.map((s) => (
+              <a
+                key={s.name}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-zinc-500 hover:text-green-400"
+              >
+                {s.name}
+              </a>
+            ))}
           </div>
         </div>
 
@@ -27,6 +45,11 @@ export function SiteFooter() {
                 </Link>
               </li>
             ))}
+            <li>
+              <Link href="/pricing" className="hover:text-white">
+                Pricing
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -40,6 +63,24 @@ export function SiteFooter() {
                 </Link>
               </li>
             ))}
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-zinc-500">Areas we serve</h4>
+          <ul className="space-y-2 text-sm">
+            {FOOTER_LOCATION_LINKS.slice(0, 8).map((l) => (
+              <li key={l.href}>
+                <Link href={l.href} className="hover:text-white">
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <Link href="/locations/website-development-company-mangalore" className="text-green-400 hover:underline">
+                All locations →
+              </Link>
+            </li>
           </ul>
         </div>
 

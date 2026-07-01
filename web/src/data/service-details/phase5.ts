@@ -1,0 +1,746 @@
+import type { ServiceDetailEnhancement, PillarPricingTier } from "@/types";
+import { buildPillarFaqs } from "@/lib/pillar-faqs";
+
+const WEB: PillarPricingTier[] = [
+  { name: "Essential", range: "₹60,000 – ₹1,20,000", description: "Focused website scope.", includes: ["Mobile design", "5–8 pages", "SEO basics", "Contact form", "30-day support"] },
+  { name: "Professional", range: "₹1,20,000 – ₹3,50,000", description: "Full custom site.", includes: ["Custom UI", "CMS/Next.js", "Blog", "Schema", "Training"] },
+  { name: "Enterprise", range: "₹3,50,000+", description: "Advanced integrations.", includes: ["SRS", "APIs", "Multi-language", "SLA", "Dedicated PM"] },
+];
+
+const SW: PillarPricingTier[] = [
+  { name: "MVP", range: "₹2,50,000 – ₹8,00,000", description: "Core module.", includes: ["SRS", "Admin UI", "Roles", "Deploy", "30-day warranty"] },
+  { name: "Platform", range: "₹8,00,000 – ₹25,00,000", description: "Multi-module system.", includes: ["Modules", "Reports", "APIs", "Training", "Docs"] },
+  { name: "Enterprise", range: "₹25,00,000+", description: "Large-scale rollout.", includes: ["Phased deploy", "Migration", "SLA", "Dedicated team"] },
+];
+
+const MOBILE: PillarPricingTier[] = [
+  { name: "MVP", range: "₹3,00,000 – ₹8,00,000", description: "Single platform core app.", includes: ["UX design", "API", "QA", "Store submission"] },
+  { name: "Full App", range: "₹8,00,000 – ₹18,00,000", description: "Production iOS + Android.", includes: ["Cross-platform", "Payments", "Analytics", "Launch"] },
+  { name: "Scale", range: "₹18,00,000+", description: "Enterprise features.", includes: ["CI/CD", "SLA", "Roadmap sprints"] },
+];
+
+const AI: PillarPricingTier[] = [
+  { name: "Pilot", range: "₹75,000 – ₹2,50,000", description: "Single AI workflow.", includes: ["Design", "Deploy", "Handoff", "30-day tune"] },
+  { name: "Programme", range: "₹2,50,000 – ₹8,00,000", description: "Multi-channel AI.", includes: ["Integrations", "Dashboard", "Training", "Monitoring"] },
+  { name: "Enterprise", range: "₹8,00,000+", description: "Custom AI platform.", includes: ["Data pipelines", "Security", "SLA", "Optimization"] },
+];
+
+const CLOUD: PillarPricingTier[] = [
+  { name: "Audit", range: "₹50,000 – ₹1,50,000", description: "Assessment and plan.", includes: ["Inventory", "TCO", "Roadmap", "Risks"] },
+  { name: "Migration", range: "₹1,50,000 – ₹6,00,000", description: "Execute move to cloud.", includes: ["Architecture", "Cutover", "Monitoring", "Backups"] },
+  { name: "Managed", range: "₹25,000 – ₹1,00,000/mo", description: "Ongoing ops.", includes: ["24/7 monitoring", "Patches", "Scaling", "Reports"] },
+];
+
+const MKT: PillarPricingTier[] = [
+  { name: "Local", range: "₹25,000 – ₹50,000/mo", description: "GBP and local SEO.", includes: ["GBP", "Citations", "On-page", "Reporting"] },
+  { name: "Growth", range: "₹50,000 – ₹1,50,000/mo", description: "SEO + content + ads.", includes: ["Content", "Technical SEO", "Ads", "CRO"] },
+  { name: "Full Funnel", range: "₹1,50,000+/mo", description: "Multi-channel.", includes: ["Strategy", "Paid media", "Attribution", "Account manager"] },
+];
+
+const BRAND: PillarPricingTier[] = [
+  { name: "Package", range: "₹25,000 – ₹75,000", description: "Focused creative scope.", includes: ["Concepts", "Revisions", "Export files", "Usage guide"] },
+  { name: "System", range: "₹75,000 – ₹2,50,000", description: "Full creative system.", includes: ["Strategy", "Templates", "Mockups", "Guidelines"] },
+  { name: "Programme", range: "₹2,50,000+", description: "Brand rollout.", includes: ["Guidelines doc", "Collateral", "Web coordination", "Retainer options"] },
+];
+
+const UX: PillarPricingTier[] = [
+  { name: "Sprint", range: "₹50,000 – ₹1,50,000", description: "Wireframes + prototype.", includes: ["Flows", "Wireframes", "Prototype", "Handoff"] },
+  { name: "Full UI", range: "₹1,50,000 – ₹4,00,000", description: "Complete product UI.", includes: ["Hi-fi UI", "Components", "Specs", "Dev support"] },
+  { name: "System", range: "₹4,00,000+", description: "Design system.", includes: ["Audit", "Library", "Docs", "Accessibility"] },
+];
+
+const IT: PillarPricingTier[] = [
+  { name: "Audit", range: "₹50,000 – ₹1,50,000", description: "Technology assessment.", includes: ["Stack review", "Roadmap", "Recommendations"] },
+  { name: "Strategy", range: "₹1,50,000 – ₹5,00,000", description: "Transformation plan.", includes: ["Workshops", "Architecture", "Vendor selection"] },
+  { name: "Advisory", range: "Monthly retainer", description: "Ongoing CTO guidance.", includes: ["Fortnightly calls", "Reviews", "Decision support"] },
+];
+
+type Spec = {
+  categorySlug: string;
+  serviceSlug: string;
+  title: string;
+  highlight: string;
+  metaDescription: string;
+  intro: string[];
+  sections: { heading: string; paragraphs: string[] }[];
+  pricing: PillarPricingTier[];
+  deliverables: string[];
+  whyChoose: string[];
+  portfolioSlugs: string[];
+  relatedSlugs?: string[];
+  faqExtra?: { question: string; answer: string }[];
+};
+
+function build(s: Spec): ServiceDetailEnhancement {
+  return {
+    categorySlug: s.categorySlug,
+    serviceSlug: s.serviceSlug,
+    metaTitle: `${s.title} in Mangalore & Karnataka — E26 Media`,
+    metaDescription: s.metaDescription,
+    heroHighlight: s.highlight,
+    intro: s.intro,
+    sections: s.sections,
+    pricingTiers: s.pricing,
+    deliverables: s.deliverables,
+    whyChoose: s.whyChoose,
+    portfolioSlugs: s.portfolioSlugs,
+    relatedSlugs: s.relatedSlugs,
+    faqs: buildPillarFaqs(s.title, s.faqExtra ?? []),
+  };
+}
+
+const SPECS: Spec[] = [
+  {
+    categorySlug: "website-development",
+    serviceSlug: "portfolio-website",
+    title: "Portfolio Website Development",
+    highlight: "Portfolio Website",
+    metaDescription: "Portfolio websites for designers, agencies, photographers, and creatives in Mangalore. Showcase work beautifully and win higher-value clients.",
+    intro: [
+      "Your portfolio is your sales pitch — it must load fast, look exceptional on mobile, and make hiring you the obvious choice. Generic templates signal generic work.",
+      "E26 Media builds portfolio sites with case-study layouts, filterable project grids, about and services pages, and enquiry flows tuned for creative professionals and agencies in Karnataka.",
+      "We coordinate photography direction and copy structure so your best work leads every visit.",
+    ],
+    sections: [
+      { heading: "What a winning portfolio includes", paragraphs: ["Project case studies with problem, approach, and outcome — not just image grids. Clear services and process so clients know how to engage. Social proof, awards, and client logos where available. Contact and availability CTA without friction."] },
+      { heading: "Built for creative discovery", paragraphs: ["SEO for '[discipline] Mangalore' and national keywords. Fast image delivery via CDN and modern formats. Optional blog for thought leadership that compounds traffic over time."] },
+    ],
+    pricing: WEB,
+    deliverables: ["Case study templates", "Project gallery", "About & services pages", "Contact form", "SEO setup", "CMS training"],
+    whyChoose: ["Clean creative layouts", "Performance-first images", "Mangalore studio collaboration", "Maintenance available"],
+    portfolioSlugs: ["lamiya-alkhaleej", "cleanpro"],
+    relatedSlugs: ["landing-page", "corporate-website"],
+  },
+  {
+    categorySlug: "software-development",
+    serviceSlug: "hrms",
+    title: "HRMS Software Development",
+    highlight: "HRMS",
+    metaDescription: "HRMS software for Karnataka businesses — payroll, attendance, leave, recruitment, and employee self-service in one platform.",
+    intro: [
+      "HR teams drowning in spreadsheets for attendance, leave balances, and payroll calculations need a single system of record — with employee self-service so routine requests do not queue at one desk.",
+      "E26 Media builds HRMS platforms scoped to Karnataka labour practices — PF/ESI reporting hooks, leave policies, shift management, and document storage for offer letters and appraisals.",
+      "Integrate with biometric devices or mobile check-in; export payroll summaries for your accountant or Tally.",
+    ],
+    sections: [
+      { heading: "HRMS modules", paragraphs: ["Employee master, org chart, attendance and shift roster, leave management, payroll processing with payslips, recruitment pipeline, performance review cycles, and document vault."] },
+      { heading: "Rollout for growing teams", paragraphs: ["Start with attendance + leave + employee directory; add payroll when data quality is proven. Training for HR and managers; employee mobile view for leave requests."] },
+    ],
+    pricing: SW,
+    deliverables: ["Employee database", "Attendance module", "Leave workflows", "Payroll engine", "Reports", "Training"],
+    whyChoose: ["Karnataka payroll context", "Phased module rollout", "Biometric integration options", "Mangalore support"],
+    portfolioSlugs: ["supermarket"],
+    relatedSlugs: ["erp", "business-automation"],
+  },
+  {
+    categorySlug: "mobile-app-development",
+    serviceSlug: "ios-app-development",
+    title: "iOS App Development",
+    highlight: "iOS App Development",
+    metaDescription: "Native iOS app development in Mangalore. Swift apps for iPhone and iPad with App Store launch support and Karnataka client references.",
+    intro: [
+      "iOS users expect polish — smooth animations, native navigation, and App Store-quality finish. A cross-platform shortcut often shows in reviews and retention.",
+      "E26 Media develops native iOS applications with Swift, integrating your backend APIs, push notifications, in-app purchases where needed, and full App Store submission support.",
+      "Android-first clients like Tawakkal expand to iOS when metrics justify; we architect shared APIs so iOS is a natural phase two.",
+    ],
+    sections: [
+      { heading: "iOS delivery scope", paragraphs: ["UX aligned to Apple HIG, Swift development, TestFlight beta, App Store listing assets, privacy policy compliance, and crash monitoring post-launch."] },
+      { heading: "When to choose native iOS", paragraphs: ["Premium consumer apps, heavy animations, AR features, or Apple-specific integrations (HealthKit, Wallet) justify native over Flutter. We advise during discovery."] },
+    ],
+    pricing: MOBILE,
+    deliverables: ["iOS UI implementation", "API integration", "Push notifications", "TestFlight build", "App Store submission", "Documentation"],
+    whyChoose: ["Tawakkal Android reference", "App Store compliance experience", "Shared API with Android", "Mangalore team"],
+    portfolioSlugs: ["tawakkal-muslim-app"],
+    relatedSlugs: ["android-app-development", "flutter-app-development"],
+  },
+  {
+    categorySlug: "mobile-app-development",
+    serviceSlug: "react-native-apps",
+    title: "React Native App Development",
+    highlight: "React Native",
+    metaDescription: "React Native apps from Mangalore — one JavaScript codebase for iOS and Android with native performance and faster time to market.",
+    intro: [
+      "React Native lets product teams ship iOS and Android from one codebase — ideal when speed and budget matter and UX requirements fit the framework's strengths.",
+      "E26 Media builds React Native apps with TypeScript, secure API layers, navigation patterns users expect, and over-the-air update strategies where appropriate.",
+      "We align with your existing web team if they already use React — shared skills reduce long-term maintenance cost.",
+    ],
+    sections: [
+      { heading: "React Native fit", paragraphs: ["Marketplace apps, content platforms, booking tools, and internal field apps often suit React Native well. Heavy gaming or AR may need native modules — we scope honestly."] },
+      { heading: "Delivery pipeline", paragraphs: ["Component library aligned to your brand, staging builds via TestFlight and Play internal testing, analytics, and store release coordination."] },
+    ],
+    pricing: MOBILE,
+    deliverables: ["Cross-platform UI", "Shared API client", "Auth flows", "Store builds", "CI setup", "Launch support"],
+    whyChoose: ["React/TypeScript expertise", "Faster dual-platform launch", "Web team synergy", "Karnataka client support"],
+    portfolioSlugs: ["tawakkal-muslim-app"],
+    relatedSlugs: ["flutter-app-development", "pwa-development"],
+  },
+  {
+    categorySlug: "mobile-app-development",
+    serviceSlug: "pwa-development",
+    title: "PWA Development",
+    highlight: "PWA",
+    metaDescription: "Progressive Web App development in Mangalore — installable web apps with offline support, push notifications, and no app store friction.",
+    intro: [
+      "Not every product needs a native app store presence. PWAs deliver installable, offline-capable experiences from the browser — lower acquisition friction and instant updates without store review delays.",
+      "E26 Media builds PWAs for internal tools, catalogues, booking flows, and customer portals where web reach matters more than App Store discovery.",
+      "Ideal for Karnataka businesses wanting mobile UX without maintaining separate iOS and Android codebases.",
+    ],
+    sections: [
+      { heading: "PWA capabilities", paragraphs: ["Service workers for offline pages and caching, web app manifest for home-screen install, push notifications on supported browsers, and responsive UI matching native patterns."] },
+      { heading: "PWA vs native decision", paragraphs: ["Choose PWA when distribution is via link/QR, update frequency is high, or budget is constrained. Choose native when store discovery, deep OS integration, or maximum performance is critical."] },
+    ],
+    pricing: MOBILE,
+    deliverables: ["PWA architecture", "Offline strategy", "Install prompts", "Push setup", "Performance tuning", "Deployment"],
+    whyChoose: ["Lower total cost", "Instant updates", "No store fees", "Works on low-end Android"],
+    portfolioSlugs: ["cleanpro"],
+    relatedSlugs: ["react-native-apps", "business-website"],
+  },
+  {
+    categorySlug: "ai-solutions",
+    serviceSlug: "ai-assistants",
+    title: "AI Assistants for Business",
+    highlight: "AI Assistants",
+    metaDescription: "Internal AI assistants for Karnataka teams — summarise documents, draft emails, query databases, and automate knowledge work safely.",
+    intro: [
+      "Generic ChatGPT tabs leak context and bypass company knowledge. Business AI assistants connect to your approved documents, CRM, and internal APIs — with access controls and audit logs.",
+      "E26 Media deploys internal assistants for sales (proposal drafts), support (ticket summaries), and operations (SOP lookup) — grounded in your data, not the open internet.",
+      "We define what the assistant can and cannot do before launch; human review stays on high-stakes outputs.",
+    ],
+    sections: [
+      { heading: "Assistant use cases", paragraphs: ["Sales: RFP response drafts from past proposals. Support: summarise long ticket threads. HR: policy Q&A from handbook. Finance: expense policy lookup. All with role-based document access."] },
+      { heading: "Security and governance", paragraphs: ["Private deployment options, PII redaction rules, conversation logging for compliance, and escalation when confidence is low."] },
+    ],
+    pricing: AI,
+    deliverables: ["Knowledge ingestion", "Access rules", "Slack/Teams/web UI", "Prompt guardrails", "Usage analytics", "Training"],
+    whyChoose: ["Grounded responses", "Access control", "Floriva customer bot experience", "Practical ROI focus"],
+    portfolioSlugs: ["floriva-flower-chatbot", "e26-website-chatbot"],
+    relatedSlugs: ["ai-chatbots", "ai-automation"],
+  },
+  {
+    categorySlug: "ai-solutions",
+    serviceSlug: "ai-workflow-integration",
+    title: "AI Workflow Integration",
+    highlight: "AI Workflow Integration",
+    metaDescription: "Connect AI to your business tools — CRM, ERP, WhatsApp, email, and custom APIs for automated workflows in Mangalore and Karnataka.",
+    intro: [
+      "AI value appears when it runs inside workflows — not as a standalone chat window. Lead scored in CRM, invoice extracted to ERP, support ticket tagged and routed — automatically.",
+      "E26 Media integrates AI steps into Zapier-style pipelines and custom backends: webhooks, queue workers, and human approval gates where required.",
+      "Floriva's WhatsApp and website bots demonstrate customer-facing integration; we apply the same engineering to internal ops.",
+    ],
+    sections: [
+      { heading: "Integration patterns", paragraphs: ["Trigger on form submit → AI enrich lead → CRM create. Email inbound → classify intent → assign queue. Document upload → extract fields → ERP draft entry."] },
+      { heading: "Reliability engineering", paragraphs: ["Retries, dead-letter queues, monitoring dashboards, and fallback to manual process when AI confidence is below threshold."] },
+    ],
+    pricing: AI,
+    deliverables: ["Workflow mapping", "API connectors", "AI step implementation", "Monitoring", "Runbooks", "Training"],
+    whyChoose: ["End-to-end integration", "Not just chat widgets", "Error handling built in", "Mangalore engineering team"],
+    portfolioSlugs: ["floriva-whatsapp-chatbot"],
+    relatedSlugs: ["ai-automation", "business-automation"],
+  },
+  {
+    categorySlug: "cloud-solutions",
+    serviceSlug: "cloud-hosting",
+    title: "Cloud Hosting Services",
+    highlight: "Cloud Hosting",
+    metaDescription: "Managed cloud hosting in Mangalore — Vercel, AWS, and Azure deployments with SSL, CDN, backups, and uptime monitoring for Karnataka businesses.",
+    intro: [
+      "Shared hosting buckles under traffic spikes; misconfigured VPS instances become security liabilities. Managed cloud hosting gives you elastic capacity, automated SSL, and professional monitoring.",
+      "E26 Media hosts client sites and APIs on Vercel, AWS, and Azure — CleanPro on Vercel and Floriva's ecommerce stack are live references.",
+      "We handle deployments, environment separation (staging/production), and incident response so your team focuses on business.",
+    ],
+    sections: [
+      { heading: "Hosting packages", paragraphs: ["Marketing sites on Vercel/Netlify with global CDN. APIs on AWS ECS/Lambda or Azure App Service. Database managed services (RDS, PlanetScale) with automated backups."] },
+      { heading: "What you get monthly", paragraphs: ["Uptime monitoring, SSL renewal, security patches, backup verification, and monthly health report. Optional SLA for ecommerce and operational apps."] },
+    ],
+    pricing: CLOUD,
+    deliverables: ["Environment setup", "CI/CD pipeline", "SSL & DNS", "Backup policy", "Monitoring alerts", "Monthly report"],
+    whyChoose: ["CleanPro Vercel live", "Floriva cloud reference", "Transparent monthly fees", "Mangalore support desk"],
+    portfolioSlugs: ["cleanpro", "floriva-gifts"],
+    relatedSlugs: ["cloud-migration", "backup-solutions"],
+  },
+  {
+    categorySlug: "cloud-solutions",
+    serviceSlug: "aws-solutions",
+    title: "AWS Solutions & Architecture",
+    highlight: "AWS Solutions",
+    metaDescription: "AWS consulting and implementation in Karnataka — EC2, S3, RDS, Lambda, and cost-optimised architecture from E26 Media Mangalore.",
+    intro: [
+      "AWS offers everything — which means easy overspending without architecture discipline. We design lean AWS environments matched to your actual load, not enterprise templates you do not need.",
+      "E26 Media implements AWS for web apps, APIs, data pipelines, and backup strategies — with IAM least-privilege, VPC segmentation, and cost alerts from day one.",
+      "Migration from on-premise or shared hosting includes runbooks your team can understand.",
+    ],
+    sections: [
+      { heading: "Common AWS builds", paragraphs: ["Static + API on Lambda/API Gateway. Containerised apps on ECS Fargate. RDS or Aurora for transactional data. S3 + CloudFront for assets. SES for transactional email."] },
+      { heading: "Cost and security", paragraphs: ["Reserved instances where steady load justifies. S3 lifecycle rules for logs. GuardDuty optional for compliance-sensitive clients. Monthly cost review included in managed plans."] },
+    ],
+    pricing: CLOUD,
+    deliverables: ["Architecture diagram", "IAM policies", "Infrastructure as code", "Deployment", "Cost dashboard", "Documentation"],
+    whyChoose: ["Practical SME sizing", "Security defaults", "Floriva-scale experience", "Karnataka client access"],
+    portfolioSlugs: ["floriva-gifts"],
+    relatedSlugs: ["cloud-migration", "cloud-infrastructure"],
+  },
+  {
+    categorySlug: "cloud-solutions",
+    serviceSlug: "azure-solutions",
+    title: "Microsoft Azure Solutions",
+    highlight: "Azure Solutions",
+    metaDescription: "Azure cloud deployments for Karnataka businesses — App Service, Azure SQL, Active Directory integration, and Microsoft-stack migrations.",
+    intro: [
+      "Organisations on Microsoft 365 and .NET stacks often fit Azure naturally — single sign-on, Active Directory, and familiar tooling for internal IT teams.",
+      "E26 Media deploys Azure App Service, Functions, Azure SQL, and Blob storage for line-of-business apps and marketing sites that integrate with Microsoft ecosystems.",
+      "We help Karnataka businesses already paying for Microsoft licences get more value from Azure rather than duplicating infrastructure elsewhere.",
+    ],
+    sections: [
+      { heading: "Azure use cases", paragraphs: [".NET APIs on App Service. SQL Server workloads on Azure SQL. File storage on Blob. Entra ID SSO for internal apps. Hybrid connectivity to on-premise when required."] },
+      { heading: "Migration approach", paragraphs: ["Assess existing Windows/IIS or SQL workloads. Pilot lift-and-shift or refactor-in-place. Cutover with rollback plan and hypercare week."] },
+    ],
+    pricing: CLOUD,
+    deliverables: ["Azure subscription setup", "App deployment", "Database migration", "AD integration", "Monitoring", "Runbooks"],
+    whyChoose: ["Microsoft stack familiarity", "Enterprise SSO patterns", "Phased migration", "Mangalore consultation"],
+    portfolioSlugs: [],
+    relatedSlugs: ["aws-solutions", "cloud-migration"],
+  },
+  {
+    categorySlug: "cloud-solutions",
+    serviceSlug: "google-cloud-solutions",
+    title: "Google Cloud Platform Solutions",
+    highlight: "Google Cloud",
+    metaDescription: "GCP architecture and operations in Mangalore — Cloud Run, GKE, BigQuery, and Firebase for modern apps and data workloads.",
+    intro: [
+      "Google Cloud excels at containerised apps, data analytics, and Firebase-backed mobile products. We architect GCP for startups and SMEs that want serverless scale without ops overhead.",
+      "E26 Media implements Cloud Run, GKE when Kubernetes is required, Cloud SQL, and BigQuery pipelines — with billing budgets and alerts to prevent surprise invoices.",
+      "Ideal when your team already uses Google Workspace and wants unified cloud identity.",
+    ],
+    sections: [
+      { heading: "GCP patterns we implement", paragraphs: ["Serverless APIs on Cloud Run. Mobile backends on Firebase. Data warehouse on BigQuery with scheduled ETL. Cloud CDN for global asset delivery."] },
+      { heading: "Choosing GCP vs AWS", paragraphs: ["GCP often wins on analytics and Kubernetes; AWS on breadth of managed services. We recommend based on team skills, existing contracts, and workload type — not vendor incentives."] },
+    ],
+    pricing: CLOUD,
+    deliverables: ["GCP project setup", "Service architecture", "CI/CD to Cloud Build", "IAM roles", "Monitoring", "Cost budgets"],
+    whyChoose: ["Serverless-first option", "BigQuery analytics", "Firebase mobile backends", "Honest multi-cloud advice"],
+    portfolioSlugs: [],
+    relatedSlugs: ["aws-solutions", "cloud-hosting"],
+  },
+  {
+    categorySlug: "cloud-solutions",
+    serviceSlug: "backup-solutions",
+    title: "Cloud Backup Solutions",
+    highlight: "Backup Solutions",
+    metaDescription: "Automated cloud backup and disaster recovery for Karnataka businesses — databases, files, and server snapshots with tested restore procedures.",
+    intro: [
+      "Backups that never get tested are wishful thinking. Ransomware, accidental deletes, and hardware failure happen — restore drills reveal whether your backup strategy actually works.",
+      "E26 Media configures automated backups for databases, application files, and cloud snapshots with retention policies, encryption, and quarterly restore tests documented.",
+      "Complement hosting and migration projects — or fix backup gaps on infrastructure we did not originally build.",
+    ],
+    sections: [
+      { heading: "Backup scope", paragraphs: ["Database point-in-time recovery. Daily file backups to separate cloud region/account. VM snapshots before major releases. Offsite copy isolated from production credentials."] },
+      { heading: "Recovery objectives", paragraphs: ["Define RPO/RTO with you — how much data loss and downtime is acceptable. Run tabletop restore exercise before signing off."] },
+    ],
+    pricing: CLOUD,
+    deliverables: ["Backup policy doc", "Automated jobs", "Encryption setup", "Restore test report", "Alerting", "Monthly verification"],
+    whyChoose: ["Tested restores", "Separate backup account", "Ransomware-aware design", "Mangalore support"],
+    portfolioSlugs: [],
+    relatedSlugs: ["cloud-hosting", "cloud-infrastructure"],
+  },
+  {
+    categorySlug: "cloud-solutions",
+    serviceSlug: "cloud-infrastructure",
+    title: "Cloud Infrastructure Design",
+    highlight: "Cloud Infrastructure",
+    metaDescription: "Scalable cloud infrastructure design — VPC, load balancing, auto-scaling, and security hardening for growing Karnataka applications.",
+    intro: [
+      "Applications that outgrow a single server need infrastructure designed for horizontal scale, zero-downtime deploys, and defence in depth — not ad-hoc server upgrades every festival season.",
+      "E26 Media designs cloud infrastructure: network segmentation, load balancers, auto-scaling groups, secrets management, and observability stacks.",
+      "Foundation work that prevents expensive re-architecture when your user base doubles.",
+    ],
+    sections: [
+      { heading: "Infrastructure components", paragraphs: ["VPC and subnet design. Application load balancing. Auto-scaling policies. Redis/cache layers. Message queues for async work. Centralised logging and metrics."] },
+      { heading: "Security baseline", paragraphs: ["WAF rules, DDoS protection options, secrets in vault services, least-privilege IAM, and patch automation. Documented for your compliance questionnaires."] },
+    ],
+    pricing: CLOUD,
+    deliverables: ["Architecture blueprint", "IaC templates", "Scaling policies", "Security review", "Load test plan", "Ops playbook"],
+    whyChoose: ["Scale-ready design", "Multi-cloud experience", "Documentation for IT teams", "Managed ops available"],
+    portfolioSlugs: ["floriva-gifts"],
+    relatedSlugs: ["aws-solutions", "cloud-hosting"],
+  },
+  {
+    categorySlug: "digital-marketing",
+    serviceSlug: "social-media-marketing",
+    title: "Social Media Marketing",
+    highlight: "Social Media Marketing",
+    metaDescription: "Social media marketing for Karnataka brands — Instagram, Facebook, LinkedIn strategy, content calendars, and community growth.",
+    intro: [
+      "Posting randomly does not build brand — consistent strategy, on-brand creatives, and community engagement do. Social supports trust before a prospect ever clicks your website.",
+      "E26 Media manages organic social for local and B2B brands: content calendars, reel and post design, hashtag strategy, and monthly analytics tied to leads—not vanity likes alone.",
+      "We coordinate social creatives with your website and ad campaigns so messaging stays unified.",
+    ],
+    sections: [
+      { heading: "Organic social programme", paragraphs: ["Platform selection based on audience — Instagram for visual B2C, LinkedIn for B2B, Facebook for local community. Content pillars aligned to services and seasons. UGC and review amplification."] },
+      { heading: "Measurement", paragraphs: ["Track profile visits, link clicks, DM enquiries, and saved posts. Report what matters to sales, not just impression counts."] },
+    ],
+    pricing: MKT,
+    deliverables: ["Content calendar", "Creative production", "Caption copy", "Community monitoring", "Monthly report", "Strategy call"],
+    whyChoose: ["Brand-aligned creatives", "Al Mirath Gulf experience", "Integrated with ads/SEO", "Mangalore team"],
+    portfolioSlugs: ["al-mirath", "brightleaf"],
+    relatedSlugs: ["meta-ads", "content-marketing"],
+  },
+  {
+    categorySlug: "digital-marketing",
+    serviceSlug: "email-marketing",
+    title: "Email Marketing Services",
+    highlight: "Email Marketing",
+    metaDescription: "Email marketing for Karnataka businesses — newsletters, nurture sequences, automation, and CRM integration that drives repeat revenue.",
+    intro: [
+      "Email remains the highest-ROI owned channel when lists are permission-based and content is relevant. Abandoned enquiries, customer nurture, and seasonal campaigns belong in automated sequences.",
+      "E26 Media sets up email programmes on Mailchimp, Brevo, or HubSpot — list segmentation, template design, automation flows, and deliverability best practices.",
+      "Integrate with your website forms and CRM so new leads enter the right sequence automatically.",
+    ],
+    sections: [
+      { heading: "Email programmes we build", paragraphs: ["Welcome series for new subscribers. Nurture tracks by service interest. Re-engagement for cold leads. Post-purchase follow-up for ecommerce. Event and festival campaigns for Karnataka retail."] },
+      { heading: "Deliverability discipline", paragraphs: ["SPF/DKIM/DMARC setup, list hygiene, double opt-in where appropriate, and spam-score testing before broadcast sends."] },
+    ],
+    pricing: MKT,
+    deliverables: ["ESP setup", "Template design", "Automation flows", "List segmentation", "A/B tests", "Monthly analytics"],
+    whyChoose: ["CRM integration", "GDPR-conscious practices", "Copy + design together", "Karnataka festival timing"],
+    portfolioSlugs: ["brightleaf"],
+    relatedSlugs: ["content-marketing", "conversion-optimization"],
+  },
+  {
+    categorySlug: "digital-marketing",
+    serviceSlug: "conversion-optimization",
+    title: "Conversion Rate Optimization",
+    highlight: "Conversion Optimization",
+    metaDescription: "CRO services in Mangalore — landing page tests, funnel analysis, heatmaps, and UX fixes that turn more visitors into leads and sales.",
+    intro: [
+      "Traffic without conversion is wasted ad spend. CRO diagnoses where users drop off — confusing forms, slow mobile pages, weak CTAs — and fixes with data, not opinions.",
+      "E26 Media runs CRO programmes for Karnataka lead-gen sites and ecommerce: analytics funnel review, heatmap analysis, A/B tests on headlines and forms, and implementation of winners.",
+      "Often the highest ROI marketing investment because it improves every channel simultaneously.",
+    ],
+    sections: [
+      { heading: "CRO process", paragraphs: ["Baseline funnel metrics from GA4. Heuristic review and user recording analysis. Hypothesis backlog prioritised by impact. A/B or multivariate tests on staging. Implement winners and iterate."] },
+      { heading: "Common wins", paragraphs: ["Shorter mobile forms. Click-to-call above fold. Social proof near CTA. Page speed fixes. Clear single CTA per landing page. Trust badges for payment pages."] },
+    ],
+    pricing: MKT,
+    deliverables: ["Funnel audit", "Test plan", "Variant design", "Implementation", "Results report", "Iteration roadmap"],
+    whyChoose: ["Dev + marketing in one team", "Fast implementation", "Abrar/CleanPro site context", "Honest test discipline"],
+    portfolioSlugs: ["abrar-caterers", "cleanpro"],
+    relatedSlugs: ["landing-page", "google-ads"],
+  },
+  {
+    categorySlug: "branding",
+    serviceSlug: "brand-guidelines",
+    title: "Brand Guidelines Design",
+    highlight: "Brand Guidelines",
+    metaDescription: "Brand guidelines documents for Karnataka businesses — logo usage, colours, typography, and voice rules for consistent branding.",
+    intro: [
+      "Without guidelines, every vendor invents a new shade of your logo and marketing looks fragmented. Brand guidelines are the rulebook for designers, agencies, and internal teams.",
+      "E26 Media produces brand guideline documents covering logo clear space and misuse examples, colour palettes with CMYK/RGB/hex, typography hierarchy, imagery style, and tone of voice.",
+      "Delivered as PDF and optional Figma library — essential after logo or identity projects before scaling marketing.",
+    ],
+    sections: [
+      { heading: "Guidelines contents", paragraphs: ["Logo variants (primary, reversed, icon). Minimum sizes and exclusion zones. Colour primary and secondary with accessibility notes. Typefaces for print and web. Stationery and social templates."] },
+      { heading: "Who uses guidelines", paragraphs: ["Internal marketing, print vendors in Mangalore, social freelancers, and web developers — everyone references one document instead of guessing."] },
+    ],
+    pricing: BRAND,
+    deliverables: ["Guidelines PDF", "Logo asset pack", "Colour specs", "Type pairing", "Template examples", "Brand training session"],
+    whyChoose: ["Follows identity projects", "Practical not theoretical", "Print + digital specs", "Mangalore workshop available"],
+    portfolioSlugs: ["lamiya-alkhaleej", "abrar-caterers"],
+    relatedSlugs: ["brand-identity", "logo-design"],
+  },
+  {
+    categorySlug: "branding",
+    serviceSlug: "packaging-design",
+    title: "Packaging Design",
+    highlight: "Packaging Design",
+    metaDescription: "Product packaging design in Mangalore — retail boxes, labels, pouches, and shelf-ready creative for Karnataka FMCG and gift brands.",
+    intro: [
+      "Shelf competition is won in three seconds. Packaging must communicate category, quality, and brand at a glance — and meet print vendor technical requirements.",
+      "E26 Media designs packaging for retail products, gift boxes, food labels, and export-oriented goods from Karnataka manufacturers — dielines, print specs, and mockups for stakeholder approval.",
+      "Coordinate with Floriva gift branding and local retail clients for cohesive product presence.",
+    ],
+    sections: [
+      { heading: "Packaging deliverables", paragraphs: ["Concept sketches to final artwork. Dieline files for printer. Barcode and regulatory text placement. Material finish recommendations (matte, foil, UV). 3D mockups for sales presentations."] },
+      { heading: "Print coordination", paragraphs: ["We work with Mangalore and Bengaluru print vendors — colour proofing advice and pre-press checklists to avoid costly reprints."] },
+    ],
+    pricing: BRAND,
+    deliverables: ["Concept directions", "Final artwork", "Dieline files", "Print spec sheet", "3D mockups", "Vendor handoff"],
+    whyChoose: ["Retail shelf awareness", "Print-ready files", "Floriva gift context", "Revision rounds included"],
+    portfolioSlugs: ["floriva-gifts"],
+    relatedSlugs: ["brand-identity", "logo-design"],
+  },
+  {
+    categorySlug: "branding",
+    serviceSlug: "social-media-creatives",
+    title: "Social Media Creative Design",
+    highlight: "Social Media Creatives",
+    metaDescription: "On-brand social media creatives — Instagram posts, reels covers, LinkedIn banners, and ad assets for Karnataka businesses.",
+    intro: [
+      "Scroll-stopping social creative requires brand consistency and platform-native formats — square, vertical, story safe zones — not resized corporate posters.",
+      "E26 Media produces monthly social creative packs: post templates, reel thumbnails, festival campaigns, and ad variants aligned to your brand guidelines.",
+      "Pairs with social media marketing management or supplies assets for your in-house team.",
+    ],
+    sections: [
+      { heading: "Creative formats", paragraphs: ["Instagram feed and carousel. Story and reel templates. LinkedIn article headers. Facebook ad sizes. WhatsApp status graphics for local businesses."] },
+      { heading: "Campaign rhythm", paragraphs: ["Festival calendars for Karnataka and national events. Product launch kits. Employer branding packs for recruitment drives."] },
+    ],
+    pricing: BRAND,
+    deliverables: ["Template library", "Monthly asset batch", "Source files", "Brand compliance check", "Ad size variants", "Revision rounds"],
+    whyChoose: ["Platform-native sizing", "Fast turnaround", "Brand guideline aligned", "Works with Meta Ads"],
+    portfolioSlugs: ["al-mirath", "brightleaf"],
+    relatedSlugs: ["social-media-marketing", "meta-ads"],
+  },
+  {
+    categorySlug: "branding",
+    serviceSlug: "company-profile-design",
+    title: "Company Profile Design",
+    highlight: "Company Profile",
+    metaDescription: "Professional company profile and capability deck design for Karnataka B2B — tenders, investor meetings, and partner proposals.",
+    intro: [
+      "Tenders and partnership meetings demand a polished company profile — history, capabilities, certifications, case studies, and team — in PDF and presentation format.",
+      "E26 Media designs company profiles for Mangalore and Karnataka B2B firms: layout, infographics, project highlights (Lamiya, Abrar references with permission), and print-ready export.",
+      "Updateable templates so you refresh projects annually without full redesign cost.",
+    ],
+    sections: [
+      { heading: "Profile structure", paragraphs: ["Cover and brand intro. About and leadership. Services and differentiators. Case studies with metrics. Certifications and clients. Contact and offices."] },
+      { heading: "Formats", paragraphs: ["PDF for email attachment. PowerPoint/Google Slides for meetings. Optional one-pager executive summary."] },
+    ],
+    pricing: BRAND,
+    deliverables: ["Content structure", "Designed layout", "Infographics", "Print PDF", "Editable template", "Print coordination advice"],
+    whyChoose: ["B2B Karnataka context", "Case study integration", "Tender-ready polish", "Mangalore meetings welcome"],
+    portfolioSlugs: ["lamiya-alkhaleej"],
+    relatedSlugs: ["presentation-design", "brand-identity"],
+  },
+  {
+    categorySlug: "branding",
+    serviceSlug: "presentation-design",
+    title: "Presentation Design",
+    highlight: "Presentation Design",
+    metaDescription: "Pitch deck and presentation design in Mangalore — investor decks, sales proposals, and keynote slides with professional visual storytelling.",
+    intro: [
+      "Investors and clients judge competence from slide quality before they read a single bullet. Dense text decks lose attention; visual storytelling wins meetings.",
+      "E26 Media designs pitch decks, sales proposals, training presentations, and conference keynotes — narrative flow, data visualisation, and brand-consistent templates.",
+      "From seed-stage startup pitches to corporate capability presentations for Karnataka enterprises.",
+    ],
+    sections: [
+      { heading: "Deck types", paragraphs: ["Investor pitch (problem, solution, market, traction, ask). Sales proposal with case proof. Product launch keynote. Internal strategy and training decks."] },
+      { heading: "Collaboration process", paragraphs: ["You provide bullet content and data; we structure story arc and design slides. Speaker notes included. Export to PowerPoint, Google Slides, or PDF."] },
+    ],
+    pricing: BRAND,
+    deliverables: ["Narrative outline", "Slide designs", "Chart graphics", "Master template", "Speaker notes", "Export formats"],
+    whyChoose: ["Story-first approach", "Data viz clarity", "Brand consistency", "Fast iteration cycles"],
+    portfolioSlugs: ["lamiya-alkhaleej"],
+    relatedSlugs: ["company-profile-design", "brand-identity"],
+  },
+  {
+    categorySlug: "ui-ux-design",
+    serviceSlug: "app-ui-design",
+    title: "Mobile App UI Design",
+    highlight: "App UI Design",
+    metaDescription: "Mobile app UI design in Mangalore — iOS and Android interfaces, design systems, and developer-ready Figma handoff.",
+    intro: [
+      "App UI must respect platform conventions while expressing your brand — tab bars, gestures, and thumb zones differ from web. Poor app UI shows in 1-star reviews citing 'confusing'.",
+      "E26 Media designs mobile app interfaces for iOS and Android: user flows, wireframes, high-fidelity screens, component libraries, and interactive prototypes before development.",
+      "Pairs with our Android, iOS, Flutter, and React Native development — or hand off to your engineering team.",
+    ],
+    sections: [
+      { heading: "App design deliverables", paragraphs: ["User journey maps. Wireframes for core flows. UI kit with buttons, forms, lists. Light/dark mode optional. Prototype for usability testing. Redlines for developers."] },
+      { heading: "Platform considerations", paragraphs: ["iOS HIG and Material Design alignment. Safe areas for notched devices. Empty, loading, and error states — not just happy path screens."] },
+    ],
+    pricing: UX,
+    deliverables: ["User flows", "Wireframes", "Hi-fi UI screens", "Component library", "Prototype", "Dev handoff"],
+    whyChoose: ["Tawakkal app reference", "Design + dev continuity", "Platform-native patterns", "Mangalore workshops"],
+    portfolioSlugs: ["tawakkal-muslim-app"],
+    relatedSlugs: ["website-ui-design", "prototypes"],
+  },
+  {
+    categorySlug: "ui-ux-design",
+    serviceSlug: "wireframes",
+    title: "UX Wireframing Services",
+    highlight: "Wireframes",
+    metaDescription: "UX wireframes for web and mobile products — structure, user flows, and low-fidelity layouts before visual design or development.",
+    intro: [
+      "Wireframes settle structure before pixels and code — saving expensive rework when stakeholders disagree on page hierarchy or app navigation.",
+      "E26 Media produces wireframes for websites, dashboards, and mobile apps: sitemaps, user flows, and grayscale layouts focused on content priority and conversion paths.",
+      "Ideal first phase before UI design or as blueprint for internal dev teams.",
+    ],
+    sections: [
+      { heading: "Wireframe scope", paragraphs: ["Sitemap and navigation model. Key page wireframes desktop + mobile. User flow diagrams for signup, checkout, or onboarding. Annotations for interactions and dynamic content."] },
+      { heading: "Workshop format", paragraphs: ["Stakeholder sessions in Mangalore or remote — align on goals before wireframes. Review round with consolidated feedback before sign-off."] },
+    ],
+    pricing: UX,
+    deliverables: ["Sitemap", "User flows", "Page wireframes", "Annotations", "Review session", "Figma/PDF export"],
+    whyChoose: ["Fix structure early", "Developer-ready annotations", "Workshop facilitation", "Feeds into full UI"],
+    portfolioSlugs: ["cleanpro"],
+    relatedSlugs: ["prototypes", "website-ui-design"],
+  },
+  {
+    categorySlug: "ui-ux-design",
+    serviceSlug: "prototypes",
+    title: "Interactive Prototype Design",
+    highlight: "Prototypes",
+    metaDescription: "Interactive Figma prototypes for user testing — validate web and app UX before development investment in Mangalore.",
+    intro: [
+      "Static mockups hide interaction problems. Clickable prototypes let users test flows, uncover confusion, and secure stakeholder buy-in before sprint one of development.",
+      "E26 Media builds interactive prototypes in Figma — linked screens, micro-interactions, and test scripts for moderated or unmoderated sessions.",
+      "Reduce development rework by validating UX with real users in Karnataka or remote.",
+    ],
+    sections: [
+      { heading: "Prototype fidelity", paragraphs: ["Low-fi for early concept testing. High-fi for usability tests and investor demos. Conditional flows for multiple user roles. Mobile gesture simulation."] },
+      { heading: "Testing support", paragraphs: ["Optional facilitation of test sessions, synthesis of findings, and prioritised UX fix backlog for design or dev sprints."] },
+    ],
+    pricing: UX,
+    deliverables: ["Clickable prototype", "Test scenarios", "Findings report", "Iteration round", "Dev-ready specs", "Figma share link"],
+    whyChoose: ["Test before build", "Investor-demo quality", "Iteration included", "Links to dev team"],
+    portfolioSlugs: ["lamiya-alkhaleej"],
+    relatedSlugs: ["wireframes", "app-ui-design"],
+  },
+  {
+    categorySlug: "ui-ux-design",
+    serviceSlug: "dashboard-design",
+    title: "Dashboard UI Design",
+    highlight: "Dashboard Design",
+    metaDescription: "Admin dashboard and data UI design — ERP, CRM, and analytics interfaces that make complex data actionable for Karnataka teams.",
+    intro: [
+      "ERP and analytics tools fail when dashboards show everything at once — users cannot find the one number that matters today.",
+      "E26 Media designs admin dashboards and data interfaces: information hierarchy, filter patterns, chart selection, role-based views, and responsive layouts for tablet use on shop floors.",
+      "Designed alongside software projects or as UX refresh for legacy systems.",
+    ],
+    sections: [
+      { heading: "Dashboard design principles", paragraphs: ["Role-based landing — sales sees pipeline, ops sees inventory, CEO sees KPIs. Progressive disclosure for detail drill-down. Consistent chart grammar and colour meaning. Export and share actions obvious."] },
+      { heading: "Complex data made usable", paragraphs: ["Tables with sort, filter, bulk actions. Empty states guiding first-time setup. Mobile-friendly summaries for managers travelling across Karnataka."] },
+    ],
+    pricing: UX,
+    deliverables: ["Role-based wireframes", "Dashboard UI", "Chart components", "Filter patterns", "Dark mode optional", "Dev handoff"],
+    whyChoose: ["ERP/CRM context", "MMART retail experience", "Data-dense UX skill", "Dev continuity"],
+    portfolioSlugs: ["supermarket"],
+    relatedSlugs: ["design-systems", "custom-software"],
+  },
+  {
+    categorySlug: "ui-ux-design",
+    serviceSlug: "design-systems",
+    title: "Design System Development",
+    highlight: "Design Systems",
+    metaDescription: "Design systems for product teams — component libraries, documentation, and Figma-to-code alignment in Mangalore.",
+    intro: [
+      "Growing product teams waste time rebuilding buttons and debating spacing. A design system codifies components, tokens, and patterns so design and engineering ship faster with visual consistency.",
+      "E26 Media builds design systems in Figma with documented components, colour and type tokens, accessibility notes, and alignment to your React/Tailwind codebase where applicable.",
+      "Foundation for startups scaling past MVP and enterprises cleaning up years of UI drift.",
+    ],
+    sections: [
+      { heading: "Design system contents", paragraphs: ["Primitive tokens (colour, spacing, radius, type). Component library (buttons, inputs, tables, modals). Usage guidelines and do/don't examples. Storybook or dev sync optional."] },
+      { heading: "Adoption plan", paragraphs: ["Audit existing UI debt. Prioritise high-traffic components. Migrate pages incrementally — not big-bang rewrite. Train designers and developers on contribution model."] },
+    ],
+    pricing: UX,
+    deliverables: ["Token definition", "Component library", "Documentation site", "Migration guide", "Training workshop", "Governance model"],
+    whyChoose: ["Figma + code alignment", "shadcn/Tailwind experience", "Incremental adoption", "Mangalore product teams"],
+    portfolioSlugs: ["cleanpro"],
+    relatedSlugs: ["website-ui-design", "dashboard-design"],
+  },
+  {
+    categorySlug: "it-consulting",
+    serviceSlug: "digital-transformation",
+    title: "Digital Transformation Consulting",
+    highlight: "Digital Transformation",
+    metaDescription: "Digital transformation consulting in Karnataka — modernise operations, replace manual processes, and align technology with business goals.",
+    intro: [
+      "Digital transformation is not buying software — it is changing how work flows through your organisation with technology enablement. Failed transformations usually ignore people and process.",
+      "E26 Media consults Karnataka SMEs and mid-market firms on transformation roadmaps: process mapping, tool selection, phased implementation, and change management alongside delivery.",
+      "We implement what we recommend — not slide decks that gather dust.",
+    ],
+    sections: [
+      { heading: "Transformation phases", paragraphs: ["Assess current state — interviews, system inventory, pain points. Vision and prioritised roadmap with ROI estimates. Quick wins in 90 days plus multi-year programme. Measure adoption, not just go-live dates."] },
+      { heading: "Common transformation tracks", paragraphs: ["Paper to digital workflows. Spreadsheet ERP to integrated system. Manual marketing to measurable digital funnel. On-premise to cloud with security maintained."] },
+    ],
+    pricing: IT,
+    deliverables: ["Current-state assessment", "Roadmap document", "Vendor evaluation", "Implementation plan", "KPI framework", "Executive workshops"],
+    whyChoose: ["Consult + build", "Karnataka SME focus", "Honest phasing", "Verifiable delivery track record"],
+    portfolioSlugs: ["brightleaf", "supermarket"],
+    relatedSlugs: ["technology-consulting", "business-automation-consulting"],
+  },
+  {
+    categorySlug: "it-consulting",
+    serviceSlug: "technology-consulting",
+    title: "Technology Consulting Services",
+    highlight: "Technology Consulting",
+    metaDescription: "Technology consulting in Mangalore — stack selection, architecture review, vendor evaluation, and technical due diligence for Karnataka businesses.",
+    intro: [
+      "Wrong stack choices cost years. Technology consulting gives you an independent view before you sign vendor contracts or hire a dev team.",
+      "E26 Media advises on web and mobile stack selection, cloud architecture, build-vs-buy decisions, and technical due diligence for investments — practical recommendations sized to your budget.",
+      "Engagements range from one-week audits to quarterly advisory retainers.",
+    ],
+    sections: [
+      { heading: "Consulting outputs", paragraphs: ["Architecture decision records. Stack comparison with pros/cons for your context. Security and scalability review. Cost modelling for build and run. RFP support for vendor selection."] },
+      { heading: "When to engage", paragraphs: ["Before large software spend. When internal IT and business disagree on priorities. Before acquirer technical due diligence. When legacy system replacement is overdue."] },
+    ],
+    pricing: IT,
+    deliverables: ["Written assessment", "Recommendation report", "Architecture diagrams", "Cost estimates", "Risk register", "Optional implementation quote"],
+    whyChoose: ["Vendor-neutral advice", "Hands-on builders", "Karnataka market rates context", "No shelfware reports"],
+    portfolioSlugs: ["floriva-gifts"],
+    relatedSlugs: ["product-strategy", "digital-transformation"],
+  },
+  {
+    categorySlug: "it-consulting",
+    serviceSlug: "product-strategy",
+    title: "Product Strategy Consulting",
+    highlight: "Product Strategy",
+    metaDescription: "Product strategy for startups and product teams — MVP scope, roadmaps, feature prioritisation, and go-to-market alignment in Mangalore.",
+    intro: [
+      "Founders often build features users do not need while missing the one workflow that drives retention. Product strategy aligns MVP scope with validated business outcomes.",
+      "E26 Media runs product strategy workshops: persona definition, jobs-to-be-done, MVP feature matrix, roadmap phasing, and success metrics before design or development sprints.",
+      "Ideal for Karnataka startups pre-seed through Series A and corporate innovation teams launching new digital products.",
+    ],
+    sections: [
+      { heading: "Strategy workshop outcomes", paragraphs: ["Problem statement and ICP clarity. MVP vs phase-2 feature list with effort estimates. Competitive differentiation map. Metrics dashboard definition (activation, retention, revenue)."] },
+      { heading: "From strategy to build", paragraphs: ["Optional wireframe sprint and fixed-price MVP quote following strategy sign-off — single team continuity reduces telephone game between consultant and developer."] },
+    ],
+    pricing: IT,
+    deliverables: ["Workshop facilitation", "MVP definition", "Roadmap", "Effort estimates", "Metrics plan", "Build proposal"],
+    whyChoose: ["Strategy-to-ship continuity", "Startup-friendly pricing", "Technical feasibility included", "Mangalore in-person sessions"],
+    portfolioSlugs: ["tawakkal-muslim-app", "cleanpro"],
+    relatedSlugs: ["startup-consulting", "technology-consulting"],
+  },
+  {
+    categorySlug: "it-consulting",
+    serviceSlug: "business-automation-consulting",
+    title: "Business Automation Consulting",
+    highlight: "Automation Consulting",
+    metaDescription: "Business automation consulting in Karnataka — identify ROI-positive workflows to automate before you buy software.",
+    intro: [
+      "Automation projects fail when they digitise a broken process. Consulting maps workflows first — eliminate steps, then automate what remains.",
+      "E26 Media identifies automation opportunities across sales, operations, finance, and support — estimating hours saved and recommending build, buy, or integrate approaches.",
+      "Flows into our business automation and AI implementation teams when you are ready to execute.",
+    ],
+    sections: [
+      { heading: "Automation discovery", paragraphs: ["Process interviews and shadowing. Bottleneck and error-point analysis. Tool landscape review (existing ERP, sheets, WhatsApp). Prioritised automation backlog with ROI ranking."] },
+      { heading: "Solution paths", paragraphs: ["Lightweight: Zapier/Make + existing tools. Medium: custom scripts and API integrations. Heavy: bespoke software or AI workflow integration. We quote each path transparently."] },
+    ],
+    pricing: IT,
+    deliverables: ["Process maps", "Automation backlog", "ROI estimates", "Tool recommendations", "Implementation options", "Pilot plan"],
+    whyChoose: ["Process before tech", "AI + RPA experience", "Floriva automation proof", "Execution team ready"],
+    portfolioSlugs: ["floriva-whatsapp-chatbot"],
+    relatedSlugs: ["business-automation", "ai-workflow-integration"],
+  },
+  {
+    categorySlug: "it-consulting",
+    serviceSlug: "startup-consulting",
+    title: "Startup Technology Consulting",
+    highlight: "Startup Consulting",
+    metaDescription: "Technology consulting for startups in Mangalore and Karnataka — MVP planning, cofounder technical advice, and investor-ready product execution.",
+    intro: [
+      "Technical cofounders are not always available in Mangalore's growing startup scene. Founders need a technology partner who speaks both product and code — without enterprise overhead.",
+      "E26 Media advises early-stage founders on MVP scope, technical cofounder hiring, offshore team management, and building investor-demo-ready products on realistic budgets.",
+      "Several client products started as startup MVPs — Tawakkal app, CleanPro platform — scaled from lean beginnings.",
+    ],
+    sections: [
+      { heading: "Startup advisory topics", paragraphs: ["MVP definition and cut lines. Build vs no-code vs offshore. Equity and contractor agreements (referral to legal). Pitch deck technical slides. Due diligence prep for angels and VCs."] },
+      { heading: "Mangalore startup ecosystem", paragraphs: ["We meet founders at Kanakanady office and connect product execution to local business reality — not Silicon Valley playbooks that ignore Karnataka market constraints."] },
+    ],
+    pricing: IT,
+    deliverables: ["Founder sessions", "MVP scope doc", "Architecture sketch", "Budget model", "Hiring guide", "Optional dev quote"],
+    whyChoose: ["Startup MVPs shipped", "Founder-friendly tone", "Mangalore HQ", "Strategy + build path"],
+    portfolioSlugs: ["tawakkal-muslim-app", "cleanpro"],
+    relatedSlugs: ["product-strategy", "custom-software"],
+  },
+];
+
+export const PHASE5_DETAIL_ENHANCEMENTS: ServiceDetailEnhancement[] = SPECS.map(build);

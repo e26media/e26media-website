@@ -285,10 +285,10 @@ export function HomePage() {
       {/* Blog */}
       <section className="bg-white py-16 dark:bg-zinc-950 md:py-20">
         <Container className="space-y-8">
-          <SectionHeading eyebrow="Insights" title="Latest from our blog" />
+          <SectionHeading eyebrow="Knowledge Center" title="Latest guides" />
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {BLOG_POSTS.slice(0, 6).map((post) => (
-              <Link key={post.slug} href={`/blog/${post.slug}`} className="group flex flex-col rounded-xl border border-zinc-200 p-6 transition-all hover:-translate-y-0.5 hover:border-green-200 hover:shadow-lg dark:border-zinc-800">
+              <Link key={post.slug} href={`/knowledge/guides/${post.slug}`} className="group flex flex-col rounded-xl border border-zinc-200 p-6 transition-all hover:-translate-y-0.5 hover:border-green-200 hover:shadow-lg dark:border-zinc-800">
                 <p className="font-mono text-[10px] uppercase tracking-wider text-green-600">{post.category}</p>
                 <h3 className="mt-2 font-heading text-lg font-semibold leading-snug group-hover:text-green-600">{post.title}</h3>
                 <p className="mt-2 line-clamp-3 flex-1 text-sm text-zinc-600 dark:text-zinc-400">{post.excerpt}</p>
@@ -297,8 +297,8 @@ export function HomePage() {
             ))}
           </div>
           <div className="text-center">
-            <Link href="/blog" className={buttonVariants({ variant: "outline" })}>
-              View all articles
+            <Link href="/knowledge/guides" className={buttonVariants({ variant: "outline" })}>
+              View all guides
             </Link>
           </div>
         </Container>

@@ -105,3 +105,72 @@ export type Resource = {
   description: string;
   category: string;
 };
+
+export type PillarPricingTier = {
+  name: string;
+  range: string;
+  description: string;
+  includes: string[];
+};
+
+export type ServicePillar = {
+  slug: string;
+  categorySlug?: string;
+  metaTitle: string;
+  metaDescription: string;
+  hero: {
+    badge: string;
+    title: string;
+    highlight?: string;
+    description: string;
+  };
+  intro: string[];
+  sections: { heading: string; paragraphs: string[] }[];
+  pricingTiers: PillarPricingTier[];
+  deliverables: string[];
+  whyChoose: string[];
+  process: { step: string; description: string }[];
+  portfolioSlugs: string[];
+  faqs: FAQ[];
+};
+
+export type ServiceDetailEnhancement = {
+  categorySlug: string;
+  serviceSlug: string;
+  metaTitle: string;
+  metaDescription: string;
+  heroHighlight?: string;
+  intro: string[];
+  sections: { heading: string; paragraphs: string[] }[];
+  pricingTiers: PillarPricingTier[];
+  deliverables: string[];
+  whyChoose: string[];
+  portfolioSlugs: string[];
+  relatedSlugs?: string[];
+  faqs: FAQ[];
+};
+
+export type IndustryPillar = {
+  slug: string;
+  metaTitle: string;
+  metaDescription: string;
+  heroHighlight?: string;
+  intro: string[];
+  sections: { heading: string; paragraphs: string[] }[];
+  automation: string[];
+  portfolioSlugs: string[];
+  serviceCategorySlugs: string[];
+  faqs: FAQ[];
+};
+
+export type CaseStudyEnhancement = {
+  slug: string;
+  metaTitle: string;
+  metaDescription: string;
+  intro: string[];
+  sections: { heading: string; paragraphs: string[] }[];
+  timeline: { phase: string; description: string }[];
+  metrics: { label: string; value: string }[];
+  testimonial?: string;
+  faqs: FAQ[];
+};

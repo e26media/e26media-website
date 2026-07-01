@@ -1,60 +1,29 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { ExternalLink } from "lucide-react";
-import { buildMetadata } from "@/lib/seo";
-import { Container } from "@/components/ui/section";
+import type { PortfolioProject } from "@/types";
+import type { CaseStudyEnhancement } from "@/types";
+import { Container, SectionHeading } from "@/components/ui/section";
 import { Card } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
-import { PORTFOLIO, getPortfolioProject } from "@/data/portfolio";
-import { getCaseStudyEnhancement } from "@/data/case-studies";
-import { CaseStudyLayout } from "@/components/portfolio/case-study-layout";
+import { FaqAccordion } from "@/components/sections/faq-accordion";
 import { ProjectHeroImage } from "@/components/ui/client-logo-image";
 import { projectShowsLogoHero } from "@/lib/client-logo";
 import { cn } from "@/lib/utils";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = {
+  project: PortfolioProject;
+  study: CaseStudyEnhancement;
+};
 
-export async function generateStaticParams() {
-  return PORTFOLIO.map((p) => ({ slug: p.slug }));
-}
-
-export async function generateMetadata({ params }: Props) {
-  const { slug } = await params;
-  const project = getPortfolioProject(slug);
-  if (!project) return {};
-  const study = getCaseStudyEnhancement(slug);
-  if (study) {
-    return buildMetadata({
-      title: study.metaTitle,
-      description: study.metaDescription,
-      path: `/portfolio/${slug}`,
-    });
-  }
-  return buildMetadata({
-    title: `${project.title} Case Study — E26 Media`,
-    description: project.excerpt,
-    path: `/portfolio/${slug}`,
-  });
-}
-
-export default async function PortfolioDetailPage({ params }: Props) {
-  const { slug } = await params;
-  const project = getPortfolioProject(slug);
-  if (!project) notFound();
-
-  const study = getCaseStudyEnhancement(slug);
-  if (study) {
-    return <CaseStudyLayout project={project} study={study} />;
-  }
-
+export function CaseStudyLayout({ project, study }: Props) {
   const logoHero = projectShowsLogoHero(project.image, project.clientLogo);
 
   return (
-    <Container className="space-y-10 py-14 md:py-20">
+    <Container className="space-y-16 py-14 md:py-20">
       <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
         <div className="space-y-5">
           <div>
-            <p className="font-mono text-xs uppercase tracking-wider text-green-600">{project.category}</p>
+            <p className="font-mono text-xs uppercase tracking-wider text-green-600">Case Study</p>
             <p className="mt-1 text-sm font-semibold text-zinc-500">{project.client}</p>
           </div>
           <h1 className="font-heading text-4xl font-semibold tracking-tight">{project.title}</h1>
@@ -74,6 +43,48 @@ export default async function PortfolioDetailPage({ params }: Props) {
           <ProjectHeroImage src={project.image} alt={project.title} contain={logoHero} sizes="50vw" priority />
         </div>
       </div>
+
+      <div className="mx-auto max-w-3xl space-y-6">
+        {study.intro.map((p) => (
+          <p key={p.slice(0, 48)} className="text-lg leading-relaxed text-zinc-700 dark:text-zinc-300">
+            {p}
+          </p>
+        ))}
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {study.metrics.map((m) => (
+          <Card key={m.label} className="text-center">
+            <p className="font-mono text-xs uppercase tracking-wider text-green-600">{m.label}</p>
+            <p className="mt-2 font-heading text-lg font-semibold text-zinc-950 dark:text-white">{m.value}</p>
+          </Card>
+        ))}
+      </div>
+
+      {study.sections.map((section) => (
+        <article key={section.heading} className="mx-auto max-w-3xl">
+          <h2 className="font-heading text-2xl font-semibold tracking-tight text-zinc-950 dark:text-white sm:text-3xl">
+            {section.heading}
+          </h2>
+          {section.paragraphs.map((p) => (
+            <p key={p.slice(0, 48)} className="mt-4 text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
+              {p}
+            </p>
+          ))}
+        </article>
+      ))}
+
+      <section className="mx-auto max-w-3xl space-y-6">
+        <SectionHeading title="Project timeline" align="center" />
+        <div className="space-y-4">
+          {study.timeline.map((step) => (
+            <div key={step.phase} className="rounded-xl border border-zinc-200 p-5 dark:border-zinc-800">
+              <p className="font-mono text-xs font-bold text-green-600">{step.phase}</p>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{step.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <div className="grid gap-5 md:grid-cols-3">
         <Card>
@@ -111,9 +122,21 @@ export default async function PortfolioDetailPage({ params }: Props) {
         ))}
       </div>
 
-      <Link href="/contact" className={buttonVariants({ size: "lg" })}>
-        Start a similar project
-      </Link>
+      {study.faqs.length > 0 && (
+        <section className="mx-auto max-w-3xl space-y-8">
+          <SectionHeading title="Related questions" align="center" />
+          <FaqAccordion faqs={study.faqs} />
+        </section>
+      )}
+
+      <div className="flex flex-wrap gap-4">
+        <Link href="/contact" className={buttonVariants({ size: "lg" })}>
+          Start a similar project
+        </Link>
+        <Link href="/pricing" className={buttonVariants({ variant: "outline", size: "lg" })}>
+          View pricing
+        </Link>
+      </div>
     </Container>
   );
 }

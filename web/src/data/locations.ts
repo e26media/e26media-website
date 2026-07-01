@@ -335,3 +335,12 @@ export const LOCATIONS: LocationPage[] = [
 export function getLocation(slug: string) {
   return LOCATIONS.find((l) => l.slug === slug);
 }
+
+export function getLocationsByService(serviceSlug: string) {
+  return LOCATIONS.filter((l) => l.serviceSlug === serviceSlug);
+}
+
+export const FOOTER_LOCATION_LINKS = LOCATIONS.map((l) => ({
+  label: l.title,
+  href: `/locations/${l.slug}`,
+}));

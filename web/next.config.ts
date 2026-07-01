@@ -11,6 +11,13 @@ const nextConfig = {
   },
   poweredByHeader: false,
   compress: true,
+  async redirects() {
+    return [
+      { source: "/blog", destination: "/knowledge/guides", permanent: true },
+      { source: "/blog/:slug", destination: "/knowledge/guides/:slug", permanent: true },
+      { source: "/resources", destination: "/knowledge/downloads", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

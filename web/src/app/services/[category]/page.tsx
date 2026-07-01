@@ -4,6 +4,9 @@ import { buildMetadata } from "@/lib/seo";
 import { Container, SectionHeading } from "@/components/ui/section";
 import { Card } from "@/components/ui/card";
 import { getCategory } from "@/data/services";
+import { getCategoryPillar } from "@/data/pillars";
+import { ServicePillarLayout } from "@/components/services/service-pillar-layout";
+import { FaqJsonLd } from "@/components/seo/json-ld";
 
 type Props = { params: Promise<{ category: string }> };
 
@@ -14,8 +17,16 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props) {
   const { category: slug } = await params;
+  const pillar = getCategoryPillar(slug);
   const category = getCategory(slug);
   if (!category) return {};
+  if (pillar) {
+    return buildMetadata({
+      title: pillar.metaTitle,
+      description: pillar.metaDescription,
+      path: `/services/${slug}`,
+    });
+  }
   return buildMetadata({
     title: `${category.title} Services — E26 Media`,
     description: category.description,
@@ -28,8 +39,18 @@ export default async function ServiceCategoryPage({ params }: Props) {
   const category = getCategory(slug);
   if (!category) notFound();
 
+  const pillar = getCategoryPillar(slug);
+  if (pillar) {
+    return (
+      <>
+        <FaqJsonLd faqs={pillar.faqs} />
+        <ServicePillarLayout pillar={pillar} category={category} />
+      </>
+    );
+  }
+
   return (
-    <Container className="py-16 md:py-24 space-y-12">
+    <Container className="space-y-12 py-16 md:py-24">
       <SectionHeading eyebrow="Services" title={category.title} description={category.description} />
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {category.items.map((item) => (
